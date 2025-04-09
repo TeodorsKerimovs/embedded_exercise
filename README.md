@@ -11,7 +11,7 @@ https://marketplace.visualstudio.com/items?itemName=stmicroelectronics.stm32-vsc
 
 You can also flash the binary via stm32-vscode-extension
 
-See video for more explanation:
+See demo video:
 https://youtu.be/X0cEFNA0opg
 
 ## Overview
