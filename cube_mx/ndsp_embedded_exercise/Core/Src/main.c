@@ -1,22 +1,48 @@
 /* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define RX_SINGLE_RECEIVE_BUFFER_SIZE 256
+#define RX_BUFFER_SIZE 256
+#define ADC_BUF_LEN 2
+#define ADC_FILTER_COEFFICIENT 0.999f  // ADC filter coefficient
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -30,6 +56,7 @@ TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -42,10 +69,26 @@ static void MX_TIM3_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
+void process_command(void);
+void send_ok(void);
+void send_error(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+bool rx_transfer_complete;
+uint8_t rx_data[RX_SINGLE_RECEIVE_BUFFER_SIZE];
+uint8_t rx_buffer[RX_BUFFER_SIZE];
+uint16_t adc_buffer_raw[ADC_BUF_LEN];
+float adc_buffer_smooth[ADC_BUF_LEN];
+
+bool temperature_on = false;
+bool voltage_on = false;
+float temperature_threshold = 73.00f;
+float voltage_threshold = 8.35f;
+
 /* USER CODE END 0 */
 
 /**
@@ -56,6 +99,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -64,12 +108,14 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -81,13 +127,29 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
+  HAL_UART_Receive_IT(&huart2, rx_data, 1);
+
+  HAL_TIM_Base_Start_IT(&htim1);  // Start Timer 1 in interrupt mode
+  HAL_TIM_Base_Start_IT(&htim2);  // Start Timer 2 in interrupt mode
+  HAL_TIM_Base_Start_IT(&htim3);  // Start Timer 3 in interrupt mode
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+
+  adc_buffer_smooth[ADC_CHANNEL_1] = 0.00f;
+  adc_buffer_smooth[ADC_CHANNEL_4] = 0.00f;
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buffer_raw, ADC_BUF_LEN);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  while (1)
+  {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+  }
   /* USER CODE END 3 */
 }
 
@@ -145,11 +207,13 @@ static void MX_ADC1_Init(void)
 {
 
   /* USER CODE BEGIN ADC1_Init 0 */
+
   /* USER CODE END ADC1_Init 0 */
 
   ADC_ChannelConfTypeDef sConfig = {0};
 
   /* USER CODE BEGIN ADC1_Init 1 */
+
   /* USER CODE END ADC1_Init 1 */
 
   /** Common config
@@ -185,6 +249,7 @@ static void MX_ADC1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN ADC1_Init 2 */
+
   /* USER CODE END ADC1_Init 2 */
 
 }
@@ -198,6 +263,7 @@ static void MX_TIM1_Init(void)
 {
 
   /* USER CODE BEGIN TIM1_Init 0 */
+
   /* USER CODE END TIM1_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
@@ -206,6 +272,7 @@ static void MX_TIM1_Init(void)
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = {0};
 
   /* USER CODE BEGIN TIM1_Init 1 */
+
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 9999;
@@ -256,6 +323,7 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM1_Init 2 */
+
   /* USER CODE END TIM1_Init 2 */
   HAL_TIM_MspPostInit(&htim1);
 
@@ -270,6 +338,7 @@ static void MX_TIM2_Init(void)
 {
 
   /* USER CODE BEGIN TIM2_Init 0 */
+
   /* USER CODE END TIM2_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
@@ -277,11 +346,12 @@ static void MX_TIM2_Init(void)
   TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM2_Init 1 */
+
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 9999;
+  htim2.Init.Prescaler = 183;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 6399;
+  htim2.Init.Period = 999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -304,7 +374,7 @@ static void MX_TIM2_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 3199;
+  sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
@@ -312,6 +382,7 @@ static void MX_TIM2_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM2_Init 2 */
+
   /* USER CODE END TIM2_Init 2 */
   HAL_TIM_MspPostInit(&htim2);
 
@@ -326,6 +397,7 @@ static void MX_TIM3_Init(void)
 {
 
   /* USER CODE BEGIN TIM3_Init 0 */
+
   /* USER CODE END TIM3_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
@@ -333,11 +405,12 @@ static void MX_TIM3_Init(void)
   TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM3_Init 1 */
+
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 9999;
+  htim3.Init.Prescaler = 389;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 6399;
+  htim3.Init.Period = 999;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -368,6 +441,7 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM3_Init 2 */
+
   /* USER CODE END TIM3_Init 2 */
   HAL_TIM_MspPostInit(&htim3);
 
@@ -382,9 +456,11 @@ static void MX_USART2_UART_Init(void)
 {
 
   /* USER CODE BEGIN USART2_Init 0 */
+
   /* USER CODE END USART2_Init 0 */
 
   /* USER CODE BEGIN USART2_Init 1 */
+
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
@@ -399,6 +475,7 @@ static void MX_USART2_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART2_Init 2 */
+
   /* USER CODE END USART2_Init 2 */
 
 }
@@ -427,16 +504,182 @@ static void MX_DMA_Init(void)
 static void MX_GPIO_Init(void)
 {
   /* USER CODE BEGIN MX_GPIO_Init_1 */
+
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
+
   /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+  static uint32_t rx_idx;
+  if (huart->Instance == USART2) {
+    for (uint32_t i = 0; i < RX_BUFFER_SIZE && rx_data[i] != '\0'; i++) {
+        if ((rx_data[i] != '\r') && (rx_data[i] != '\n') && (rx_idx < (RX_BUFFER_SIZE - 1))) {
+            // Add byte to the buffer if it's not a carriage return or newline
+            rx_buffer[rx_idx++] = rx_data[i];
+            
+        } else {
+            // End of command, null-terminate the string
+            rx_buffer[rx_idx] = '\0';
+            rx_transfer_complete = true;
+
+            // Send CRLF after processing
+            HAL_UART_Transmit(&huart2, (uint8_t*)"\r\n", 2, 10);
+
+            // Reset index for next reception
+            rx_idx = 0;
+
+            // Process the received command
+            process_command();
+
+            break; // Exit the loop once command is processed
+        }
+    }
+
+    // Restart reception for the next byte
+    HAL_UART_Receive_IT(&huart2, rx_data, 1);
+  }
+}
+
+void process_command(void) {
+    // Process the command stored in rx_buffer
+              printf("Hello, World!\n");
+    if (rx_transfer_complete) {
+        rx_transfer_complete = false; // Reset transfer complete flag
+
+        if (strcmp((char*)rx_buffer, "TEMPERATURE_ON") == 0) {
+            temperature_on = true;
+            send_ok();
+        } else if (strcmp((char*)rx_buffer, "TEMPERATURE_OFF") == 0) {
+            temperature_on = false;
+            send_ok();
+        } else if (strncmp((char*)rx_buffer, "TEMPERATURE_SET_THRESHOLD=", 26) == 0) {
+          uint32_t temperature_threshold_milli_degree;
+
+          if (sscanf((char*)rx_buffer + strlen("TEMPERATURE_SET_THRESHOLD="), "%lud", &temperature_threshold_milli_degree) == 1) {
+            temperature_threshold = (float)temperature_threshold_milli_degree / 1000;
+            send_ok();     
+          } else {
+              // Handle error in parsing
+              send_error();
+          }
+
+        } else if (strcmp((char*)rx_buffer, "VOLTAGE_ON") == 0) {
+            voltage_on = true;
+            send_ok();
+
+        } else if (strcmp((char*)rx_buffer, "VOLTAGE_OFF") == 0) {
+            voltage_on = false;
+            send_ok();
+
+        } else if (strncmp((char*)rx_buffer, "VOLTAGE_SET_THRESHOLD=", 22) == 0) {
+          uint32_t voltage_threshold_mv;
+
+          if (sscanf((char*)rx_buffer + strlen("VOLTAGE_SET_THRESHOLD="), "%lu", &voltage_threshold_mv) == 1) {
+            voltage_threshold = (float)voltage_threshold_mv / 1000;
+            send_ok();
+
+          } else {
+              // Handle error in parsing
+              send_error();
+          }
+
+        } else {
+            send_error();
+        }
+    }
+}
+
+void send_ok(void) {
+  HAL_UART_Transmit(&huart2, (uint8_t*)"CMD_OK\r\n", 8, HAL_MAX_DELAY);
+}
+
+void send_error(void) {
+  HAL_UART_Transmit(&huart2, (uint8_t*)"CMD_ERROR\r\n", 11, HAL_MAX_DELAY);
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM1) {
+      char temperature_status[32];
+      char msg_temperature[128];
+
+      char voltage_status[32];
+      char msg_voltage[128];
+
+      if ((temperature_on) || (voltage_on)) {
+        if (temperature_on) {
+          if (adc_buffer_smooth[0] >= temperature_threshold) {
+            strcpy(temperature_status, "ALERT");
+          } else {
+            strcpy(temperature_status, "OK");
+          }
+          snprintf(msg_temperature, sizeof(msg_temperature), "temperature_measured = %.2f; temperature_threshold = %.2f; temperature_status = %s; ", adc_buffer_smooth[0], temperature_threshold, temperature_status);
+        } else {
+          memset(msg_temperature, 0, sizeof(msg_temperature));
+        }
+
+        if (voltage_on) {
+          if (adc_buffer_smooth[1] >= voltage_threshold) {
+            strcpy(voltage_status, "ALERT");
+          } else {
+            strcpy(voltage_status, "OK");
+          }
+          snprintf(msg_voltage, sizeof(msg_voltage), "voltage_measured = %.2f; voltage_threshold = %.2f; voltage_status = %s; ", adc_buffer_smooth[1], voltage_threshold, voltage_status);
+        } else {       
+          memset(msg_voltage, 0, sizeof(msg_voltage));
+        }
+
+        // Concatenate the two messages
+        char final_msg[256];
+        int len = snprintf(final_msg, sizeof(final_msg), "%s%s\r\n", msg_temperature, msg_voltage);
+        
+        HAL_UART_Transmit(&huart2, (uint8_t*)final_msg, len, HAL_MAX_DELAY);
+      }
+
+    }
+
+    static uint16_t step_tim2 = 1;
+    static uint16_t duty_tim2 = 0;
+    if (htim->Instance == TIM2) {
+        duty_tim2 += step_tim2;
+        if (duty_tim2 >= 1000 || duty_tim2 <= 0) {
+          step_tim2 = -step_tim2;
+        }
+        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, duty_tim2);
+    }
+    
+    static uint16_t duty_tim3 = 0;
+    if (htim->Instance == TIM3) {
+        if (duty_tim3 >= 1000) {
+          duty_tim3 = 0;
+        }
+        __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, duty_tim3++);
+    }
+
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
+  UNUSED(hadc);
+  // Scale rawTemperature from 0 to 100 Celsius degrees
+  float rawTemperature = (float)adc_buffer_raw[0];
+  rawTemperature = rawTemperature * 100 / 4095;
+  adc_buffer_smooth[0] = ((1.00f - ADC_FILTER_COEFFICIENT) * adc_buffer_smooth[0]) + (ADC_FILTER_COEFFICIENT * rawTemperature);
+
+  // Scale rawVoltage from 0 to 9 Volts
+  float rawVoltage = (float)adc_buffer_raw[1];
+  rawVoltage = rawVoltage * 9 / 4095;
+  adc_buffer_smooth[1] = ((1.00f - ADC_FILTER_COEFFICIENT) * adc_buffer_smooth[1]) + (ADC_FILTER_COEFFICIENT * rawVoltage);
+
+}
+
 /* USER CODE END 4 */
 
 /**
@@ -446,6 +689,11 @@ static void MX_GPIO_Init(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -460,6 +708,9 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
