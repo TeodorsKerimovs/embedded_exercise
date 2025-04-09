@@ -1,0 +1,6 @@
+/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/cube_mx/ndsp_embedded_exercise/CMakeFiles/ndsp_embedded_exercise.dir
+/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/cube_mx/ndsp_embedded_exercise/CMakeFiles/edit_cache.dir
+/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/cube_mx/ndsp_embedded_exercise/CMakeFiles/rebuild_cache.dir
+/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/cube_mx/ndsp_embedded_exercise/cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir
+/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/cube_mx/ndsp_embedded_exercise/cmake/stm32cubemx/CMakeFiles/edit_cache.dir
+/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/cube_mx/ndsp_embedded_exercise/cmake/stm32cubemx/CMakeFiles/rebuild_cache.dir

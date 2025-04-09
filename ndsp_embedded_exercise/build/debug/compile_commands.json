@@ -1,0 +1,26 @@
+[
+{
+  "directory": "/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/build/debug",
+  "command": "/opt/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc -DDEBUG -I/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Inc -fdata-sections -ffunction-sections -Wl,--gc-sections -g -std=gnu11 -mthumb -mcpu=cortex-m3 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Og -g3 -ggdb -o CMakeFiles/ndsp_embedded_exercise.dir/Src/main.c.obj -c /Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Src/main.c",
+  "file": "/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Src/main.c",
+  "output": "CMakeFiles/ndsp_embedded_exercise.dir/Src/main.c.obj"
+},
+{
+  "directory": "/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/build/debug",
+  "command": "/opt/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc -DDEBUG -I/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Inc -fdata-sections -ffunction-sections -Wl,--gc-sections -g -std=gnu11 -mthumb -mcpu=cortex-m3 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Og -g3 -ggdb -o CMakeFiles/ndsp_embedded_exercise.dir/Src/syscall.c.obj -c /Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Src/syscall.c",
+  "file": "/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Src/syscall.c",
+  "output": "CMakeFiles/ndsp_embedded_exercise.dir/Src/syscall.c.obj"
+},
+{
+  "directory": "/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/build/debug",
+  "command": "/opt/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc -DDEBUG -I/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Inc -fdata-sections -ffunction-sections -Wl,--gc-sections -g -std=gnu11 -mthumb -mcpu=cortex-m3 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Og -g3 -ggdb -o CMakeFiles/ndsp_embedded_exercise.dir/Src/sysmem.c.obj -c /Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Src/sysmem.c",
+  "file": "/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Src/sysmem.c",
+  "output": "CMakeFiles/ndsp_embedded_exercise.dir/Src/sysmem.c.obj"
+},
+{
+  "directory": "/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/build/debug",
+  "command": "/opt/ST/STM32CubeCLT_1.18.0/GNU-tools-for-STM32/bin/arm-none-eabi-gcc -DDEBUG -I/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise -g -mthumb -mcpu=cortex-m3 -Wall -Wextra -Wpedantic -Wno-unused-parameter -x assembler-with-cpp -MMD -MP -Og -g3 -ggdb -o CMakeFiles/ndsp_embedded_exercise.dir/Startup/startup_stm32f103r6tx.s.obj -c /Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Startup/startup_stm32f103r6tx.s",
+  "file": "/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/Startup/startup_stm32f103r6tx.s",
+  "output": "CMakeFiles/ndsp_embedded_exercise.dir/Startup/startup_stm32f103r6tx.s.obj"
+}
+]

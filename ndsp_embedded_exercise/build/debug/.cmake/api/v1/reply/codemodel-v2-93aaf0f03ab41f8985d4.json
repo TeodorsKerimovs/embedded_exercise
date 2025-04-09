@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.22"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "ndsp_embedded_exercise",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ndsp_embedded_exercise::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ndsp_embedded_exercise-Debug-79649de3ffc894b63430.json",
+					"name" : "ndsp_embedded_exercise",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/build/debug",
+		"source" : "/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

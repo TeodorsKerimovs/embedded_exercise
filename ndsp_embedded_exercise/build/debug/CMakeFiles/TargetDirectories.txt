@@ -1,0 +1,3 @@
+/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/build/debug/CMakeFiles/ndsp_embedded_exercise.dir
+/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/build/debug/CMakeFiles/edit_cache.dir
+/Users/teodors.kerimovs/Documents/ndsp_homework/embedded_exercise/ndsp_embedded_exercise/build/debug/CMakeFiles/rebuild_cache.dir

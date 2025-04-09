@@ -1,0 +1,6 @@
+# ninja log v5
+2	57	1744128391893849339	CMakeFiles/ndsp_embedded_exercise.dir/Startup/startup_stm32f103r6tx.s.obj	ff852867c25895f4
+2	73	1744128391909867102	CMakeFiles/ndsp_embedded_exercise.dir/Src/main.c.obj	5000df7fe69762f
+2	92	1744128391928843819	CMakeFiles/ndsp_embedded_exercise.dir/Src/sysmem.c.obj	c33ddcb02a02c4a0
+2	122	1744128391958412309	CMakeFiles/ndsp_embedded_exercise.dir/Src/syscall.c.obj	daab294541693a99
+122	744	1744128392008356137	ndsp_embedded_exercise.elf	f321ac3b75f2e592
